@@ -16,7 +16,7 @@ func Router() *gin.Engine {
 
 	user := r.Group("/user")
 	{
-		user.GET("/info", controllers.UserController{}.GetUserInfo)
+		user.GET("/info/:id", controllers.UserController{}.GetUserInfo)
 		user.POST("/list", controllers.UserController{}.GetList)
 		user.PUT("/add", func(ctx *gin.Context) {
 			ctx.String(http.StatusOK, "user add")

@@ -1,13 +1,21 @@
 package controllers
 
 import (
+	"gin-ranking/models"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct{}
 
 func (u UserController) GetUserInfo(c *gin.Context) {
-	ReturnSuccess(c, 0, "success", "user info", 1)
+	idStr := c.Param("id")
+	name := c.Param("name")
+	id, _ := strconv.Atoi(idStr)
+
+	user, _ := models.GetUserTest(id)
+	ReturnSuccess(c, 0, name, user, 1)
 }
 
 func (u UserController) GetList(c *gin.Context) {
