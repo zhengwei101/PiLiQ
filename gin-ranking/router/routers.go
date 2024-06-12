@@ -13,9 +13,7 @@ func Router() *gin.Engine {
 	user := r.Group("/user")
 	{
 		user.GET("/info", controllers.GetUserInfo)
-		user.POST("/list", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "user list")
-		})
+		user.POST("/list", controllers.GetList)
 		user.PUT("/add", func(ctx *gin.Context) {
 			ctx.String(http.StatusOK, "user add")
 		})
