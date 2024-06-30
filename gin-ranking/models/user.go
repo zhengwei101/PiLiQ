@@ -11,6 +11,12 @@ func (User) TableName() string {
 	return "user"
 }
 
+func GetUserInfoByUsername(username string) (User, error) {
+	var user User
+	err := dao.Db.Where("username = ?", username).First(&user).Error
+	return user, err
+}
+
 func GetUserTest(id int) (User, error) {
 	var user User
 	err := dao.Db.Where("id = ?", id).First(&user).Error
