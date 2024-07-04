@@ -1,10 +1,16 @@
 package models
 
-import "gin-ranking/dao"
+import (
+	"gin-ranking/dao"
+	"time"
+)
 
 type User struct {
-	Id       int
-	Username string
+	Id         int    `json:"id"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	AddTime    string `json:"addTime"`
+	UpdateTime string `json:"updateTime"`
 }
 
 func (User) TableName() string {
@@ -17,7 +23,39 @@ func GetUserInfoByUsername(username string) (User, error) {
 	return user, err
 }
 
-func GetUserTest(id int) (User, error) {
+func AddUser(username string, password string) (int, error) {
+	user := User{
+		Username:   username,
+		Password:   password,
+		AddTime:    time.Now().Unix(),
+		UpdateTime: time.Now().Unix()}
+	err := dao.Db.Create(&user).Error
+	return user.Id, err
+}
+
+func GetUsers(aid int) (User, error) {
+	var users []User
+	err := dao.Db.Where("aid = ?", aid).Order("add_time desc, id desc").First(&users).Error
+	return user, err
+}
+
+func AddUserTest() (int, error) {
+	user := User{Username: "test1", AddTime: time.Now().Unix()}
+	err := dao.Db.Create(&user).Error
+	return user.Id, err
+}
+
+func SaveUser(user User) (int, error) {
+	err := dao.Db.Save(&user).Error
+	return user.Id, err
+}
+
+func DeleteUser(id int) error {
+	err := dao.Db.Delete(&User{}, id).Error
+	return err
+}
+
+func GetUserInfo(id int) (User, error) {
 	var user User
 	err := dao.Db.Where("id = ?", id).First(&user).Error
 	return user, err

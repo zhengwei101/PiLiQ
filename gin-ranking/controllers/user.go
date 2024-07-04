@@ -9,6 +9,21 @@ import (
 
 type UserController struct{}
 
+type UserApi struct {
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+}
+
+func (u UserController) Login(c *gin.Context) {
+	//获取参数信息
+	username := c.DefaultPostForm("username", "")
+	password := c.DefaultPostForm("password", "")
+	if username == "" || password == "" {
+		ReturnError(c, 4001, "请输入正确的信息")
+		return
+	}
+}
+
 func (u UserController) GetUserInfo(c *gin.Context) {
 	idStr := c.Param("id")
 	name := c.Param("name")

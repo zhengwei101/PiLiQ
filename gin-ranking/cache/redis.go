@@ -3,8 +3,6 @@ package cache
 import (
 	"context"
 	"gin-ranking/config"
-
-	"github.com/redis/go-redis/v9"
 )
 
 var (
@@ -18,6 +16,7 @@ func init() {
 		Password: "", //没有密码
 		DB:       0,  //默认DB 0
 	})
+	Rctx = context.Background()
 }
 
 func Zscore(id int, score int) redis.Z {
