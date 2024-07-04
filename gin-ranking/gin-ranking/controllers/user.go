@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"gin-ranking/models"
+	"github.com/gin-contrib/sessions"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -22,23 +23,39 @@ func (u UserController) Login(c *gin.Context) {
 		ReturnError(c, 4001, "请输入正确的信息")
 		return
 	}
+	user, _ := models.GetUserInfoByUsername(username)
+	if user.Id == 0 || user.Password != EncryMd5(password) {
+		ReturnError(c, 4001, "用户名或密码不正确")
+		return
+	}
+	data := UserApi{Id: user.Id, Username: user.Username}
+	session := sessions.Default(c)
+	session.Set("login:"+strconv.Itoa(user.Id), user.Id)
+	err := session.Save()
+	if err != nil {
+		return
+	}
+	ReturnSuccess(c, 0, "success", data, 1)
 }
 
-func (u UserController) GetUserInfo(c *gin.Context) {
-	idStr := c.Param("id")
-	name := c.Param("name")
-	id, _ := strconv.Atoi(idStr)
-
-	user, _ := models.GetUserTest(id)
-	ReturnSuccess(c, 0, name, user, 1)
-}
-
-func (u UserController) GetList(c *gin.Context) {
-	// logger.Write("日志信息", "user")
-	ReturnError(c, 4004, "没有相关信息list")
-
-	// num1 := 1
-	// num2 := 0
-	// num3 := num1 / num2
-	// ReturnError(c, 4004, num3)
+func (u UserController) Register(c *gin.Context) {
+	//获取参数信息
+	username := c.DefaultPostForm("username", "")
+	password := c.DefaultPostForm("password", "")
+	confirmPassword := c.DefaultPostForm("confirmPassword", "")
+	if username == "" || password == "" || confirmPassword == "" {
+		ReturnError(c, 4001, "请输入正确的信息")
+		return
+	}
+	user, err := models.GetUserInfoByUsername(username)
+	if user.Id != 0 {
+		ReturnError(c, 4001, "此用户名已存在")
+		return
+	}
+	_, err = models.AddUser(username, EncryMd5(password))
+	if err != nil {
+		ReturnError(c, 4002, "注册失败，请重试")
+		return
+	}
+	ReturnSuccess(c, 0, "success", "", 1)
 }

@@ -31,14 +31,7 @@ func GetPlayerInfo(id int) (Player, error) {
 	return player, err
 }
 
-func GetPlayerInfo(id int) (Player, error) {
-	var player Player
-	err := dao.Db.Where("id = ?", id).First(&player).Error
-	return player, err
-}
-
 func UpdatePlayerScore(id int) {
 	var player Player
-	dao.Db.Model(&player).Where("id=?", id).Updatecolumn("score", gorm.Expr("score + ?", 1))
-
+	dao.Db.Model(&player).Where("id=?", id).UpdateColumn("score", gorm.Expr("score + ?", 1))
 }
