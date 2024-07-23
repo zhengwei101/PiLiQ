@@ -82,8 +82,7 @@ func setOutPutFile(level logrus.Level, logName string) {
 	return
 }
 
-func LoggerToFile() gin.LoggerConfig {
-
+func ToFile() gin.LoggerConfig {
 	if _, err := os.Stat("./runtime/log"); os.IsNotExist(err) {
 		err = os.MkdirAll("./runtime/log", 0777)
 		if err != nil {
@@ -112,7 +111,6 @@ func LoggerToFile() gin.LoggerConfig {
 		},
 		Output: io.MultiWriter(os.Stdout, os.Stderr),
 	}
-
 	return conf
 }
 
@@ -125,7 +123,6 @@ func Recover(c *gin.Context) {
 					panic(fmt.Errorf("create log dir '%s' error: %s", "./runtime/log", errDir))
 				}
 			}
-
 			timeStr := time.Now().Format("2006-01-02")
 			fileName := path.Join("./runtime/log", "error_"+timeStr+".log")
 

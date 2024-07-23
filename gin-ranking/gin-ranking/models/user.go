@@ -9,8 +9,8 @@ type User struct {
 	Id         int    `json:"id"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
-	AddTime    string `json:"addTime"`
-	UpdateTime string `json:"updateTime"`
+	AddTime    int64  `json:"addTime"`
+	UpdateTime int64  `json:"updateTime"`
 }
 
 func (User) TableName() string {
@@ -33,10 +33,10 @@ func AddUser(username string, password string) (int, error) {
 	return user.Id, err
 }
 
-func GetUsers(aid int) (User, error) {
+func GetUsers(aid int) ([]User, error) {
 	var users []User
 	err := dao.Db.Where("aid = ?", aid).Order("add_time desc, id desc").First(&users).Error
-	return user, err
+	return users, err
 }
 
 func AddUserTest() (int, error) {

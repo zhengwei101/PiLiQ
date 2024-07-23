@@ -47,6 +47,10 @@ func (u UserController) Register(c *gin.Context) {
 		ReturnError(c, 4001, "请输入正确的信息")
 		return
 	}
+	if password != confirmPassword {
+		ReturnError(c, 4001, "密码和确认密码不相同")
+		return
+	}
 	user, err := models.GetUserInfoByUsername(username)
 	if user.Id != 0 {
 		ReturnError(c, 4001, "此用户名已存在")
