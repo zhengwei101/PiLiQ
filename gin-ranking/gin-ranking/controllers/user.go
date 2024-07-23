@@ -24,17 +24,14 @@ func (u UserController) Login(c *gin.Context) {
 		return
 	}
 	user, _ := models.GetUserInfoByUsername(username)
-	if user.Id == 0 || user.Password != EncryMd5(password) {
+	if user.Id == 0 || user.Password != EncryptMd5(password) {
 		ReturnError(c, 4001, "用户名或密码不正确")
 		return
 	}
 	data := UserApi{Id: user.Id, Username: user.Username}
 	session := sessions.Default(c)
 	session.Set("login:"+strconv.Itoa(user.Id), user.Id)
-	err := session.Save()
-	if err != nil {
-		return
-	}
+	_ = session.Save()
 	ReturnSuccess(c, 0, "success", data, 1)
 }
 
@@ -56,7 +53,7 @@ func (u UserController) Register(c *gin.Context) {
 		ReturnError(c, 4001, "此用户名已存在")
 		return
 	}
-	_, err = models.AddUser(username, EncryMd5(password))
+	_, err = models.AddUser(username, EncryptMd5(password))
 	if err != nil {
 		ReturnError(c, 4002, "注册失败，请重试")
 		return

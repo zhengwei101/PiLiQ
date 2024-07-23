@@ -39,12 +39,6 @@ func GetUsers(aid int) ([]User, error) {
 	return users, err
 }
 
-func AddUserTest() (int, error) {
-	user := User{Username: "test1", AddTime: time.Now().Unix()}
-	err := dao.Db.Create(&user).Error
-	return user.Id, err
-}
-
 func SaveUser(user User) (int, error) {
 	err := dao.Db.Save(&user).Error
 	return user.Id, err

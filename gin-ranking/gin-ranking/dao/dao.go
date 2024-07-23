@@ -24,12 +24,12 @@ func init() {
 	}
 
 	// ----------------------- 连接池设置 -----------------------
-	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
+	// 设置空闲连接池中连接的最大数量
 	Db.DB().SetMaxIdleConns(10)
 
-	// SetMaxOpenConns 设置打开数据库连接的最大数量。
+	// 设置打开数据库连接的最大数量。
 	Db.DB().SetMaxOpenConns(100)
 
-	// SetConnMaxLifetime 设置了连接可复用的最大时间。
+	// 设置了连接可复用的最大时间。
 	Db.DB().SetConnMaxLifetime(time.Hour)
 }
