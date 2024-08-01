@@ -6,12 +6,13 @@ import (
 	"go_gateway/dto"
 	"go_gateway/public"
 	"gorm.io/gorm"
+
 	"time"
 )
 
 type Admin struct {
 	Id        int       `json:"id" gorm:"primary_key" description:"自增主键"`
-	UserName  string    `json:"user_name" gorm:"column:user_name" description:"管理员用户名"`
+	Username  string    `json:"user_name" gorm:"column:user_name" description:"管理员用户名"`
 	Salt      string    `json:"salt" gorm:"column:salt" description:"盐"`
 	Password  string    `json:"password" gorm:"column:password" description:"密码"`
 	UpdatedAt time.Time `json:"update_at" gorm:"column:update_at" description:"更新时间"`
@@ -24,7 +25,7 @@ func (t *Admin) TableName() string {
 }
 
 func (t *Admin) LoginCheck(c *gin.Context, tx *gorm.DB, param *dto.AdminLoginInput) (*Admin, error) {
-	adminInfo, err := t.Find(c, tx, &Admin{UserName: param.UserName, IsDelete: 0})
+	adminInfo, err := t.Find(c, tx, &Admin{Username: param.Username, IsDelete: 0})
 	if err != nil {
 		return nil, errors.New("用户信息不存在")
 	}
@@ -37,7 +38,7 @@ func (t *Admin) LoginCheck(c *gin.Context, tx *gorm.DB, param *dto.AdminLoginInp
 
 func (t *Admin) Find(c *gin.Context, tx *gorm.DB, search *Admin) (*Admin, error) {
 	out := &Admin{}
-	err := tx.SetCtx(public.GetGinTraceContext(c)).Where(search).Find(out).Error
+	err := tx.Where(search).Find(out).Error
 	if err != nil {
 		return nil, err
 	}

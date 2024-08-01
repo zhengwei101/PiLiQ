@@ -58,7 +58,7 @@ import (
 // @x-extension-openapi {"example": "value on a json format"}
 
 func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
-	// programatically set swagger info
+	// programmatically set swagger info
 	docs.SwaggerInfo.Title = lib.GetStringConf("base.swagger.title")
 	docs.SwaggerInfo.Description = lib.GetStringConf("base.swagger.desc")
 	docs.SwaggerInfo.Version = "1.0"
@@ -84,10 +84,20 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		sessions.Sessions("mysession", store),
 		middleware.RecoveryMiddleware(),
 		middleware.RequestLog(),
-		middleware.TranslationMiddleware(),
-	)
+		middleware.TranslationMiddleware())
 	{
 		controller.AdminLoginRegister(adminLoginRouter)
+	}
+
+	adminRouter := router.Group("/admin")
+	adminRouter.Use(
+		sessions.Sessions("mysession", store),
+		middleware.RecoveryMiddleware(),
+		middleware.RequestLog(),
+		middleware.SessionAuthMiddleware(),
+		middleware.TranslationMiddleware())
+	{
+		controller.AdminRegister(adminRouter)
 	}
 	return router
 }
